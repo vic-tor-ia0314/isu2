@@ -20,6 +20,56 @@
             <img id="graph-img" src="" alt="Graph will appear here">
         </div>
     </div>
-    <script src="script.js"></script>
+    <script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>ISU Artifact: Graph Calculator</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Graph Calculator</h1>
+    <h2>ISU: Part 2 Artifact (<a href="https://github.com/vic-tor-ia0314/isu2">Source Code</a>)</h2>
+    <label for="shape">Choose something to practice:</label>
+    <form id="function-form">
+      <label for="function-input">Enter a function (e.g., x**2):</label>
+      <input type="text" id="function-input" name="function" placeholder="x**2" required>
+      <button type="submit">Generate Graph</button>
+    </form>
+    <div id="graph">
+      <img id="graph-img" src="" alt="Graph will appear here">
+    </div>
+  </div>
+  <script>
+    document.getElementById('function-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const functionInput = document.getElementById('function-input').value;
+
+    try {
+        const response = await fetch('/plot', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ function: functionInput })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            alert(`Error: ${errorData.error}`);
+            return;
+        }
+
+        const data = await response.json();
+        document.getElementById('graph-img').src = data.plot;
+    } catch (err) {
+        console.error('Error:', err);
+        alert('Failed to generate graph.');
+    }
+});
+</script>
+</body>
+</html></script>
     </body>
 </html>
