@@ -1,43 +1,110 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Cambria', sans-serif;
+    font-size: 1.2rem;
+    margin: 40px;
     text-align: center;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 0;
+    background-image: url(https://bikefriendlyoc.org/wp-content/uploads/2016/09/website-background-pattern.jpg);
 }
-
-.container {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
-    background: white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+.hidden {
+    display: none;
 }
-
+  
 h1 {
-    color: #333;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 3rem;
+    color: #850000;
+    border-radius: 30px;
+    padding: 15px;
+    background-color: #fcf0f0;
+    border: 5px solid #850000;
 }
-
-form {
+  
+h2 {
+    background-color: #850000;
+    color: white;
+    border-radius: 15px;
+    padding: 5px;
+    margin-top: 0px;
     margin-bottom: 20px;
 }
 
-input, button {
+.question {
+    margin-bottom: 10px;
     padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 6px;
+    background-color: #ededfc;
+}
+.answer {
+    margin-left: 20px;
+    color: #014d22;
+    margin-top: 5px;
+}
+  
+select {
+    font-family: 'Perpetua', Sans-Serif;
+    font-size: 1rem;
+    padding: 10px;
+    margin: 20px;
+    border: 2px solid #a87b00;
+    border-radius: 7px;
+    background-color: #f4f4f4;
+    color: #111;
+    cursor: pointer;
 }
 
+select:hover {
+    background-color: #fcf1d2;
+    border-color: #d19900;
+}
+
+input {
+    font-family: 'Perpetua', Sans-Serif;
+    padding: 10px;
+    margin: 20px;
+    border: 2px solid #00236e;
+    border-radius: 7px;
+    background-color: #f4f4f4;
+    color: #111;
+    cursor: text;
+}
+
+input:hover {
+    border-color: #0037ad;
+    background-color: #e4eaf7;
+}
+  
 button {
-    background-color: #007BFF;
-    color: white;
+    font-family: 'Cambria', Sans-Serif;
+    font-size: 1rem;
+    padding: 5px;
+    margin-bottom: 30px;
+    border: 2px solid #014d22;
+    border-radius: 5px;
+    background-color: #f4f4f4;
+    color: #111;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #e8fff2;
+}
+
+footer {
+    background-color: #850000;
+    color: white;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0;
+}
+
+a {
+    margin-bottom: 20px;
+    padding: 0;
+    color: white;
 }
 
 #graph img {
