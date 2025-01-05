@@ -4,72 +4,156 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>ISU Artifact: Graph Calculator</title>
-</head>
-<body>
-    <div class="container">
-        <h1>Graph Calculator</h1>
-        <h2>ISU: Part 2 Artifact (<a href="https://github.com/vic-tor-ia0314/isu2">Source Code</a>)</h2>
-        <label for="shape">Choose something to practice:</label>
-        <form id="function-form">
-            <label for="function-input">Enter a function (e.g., x**2):</label>
-            <input type="text" id="function-input" name="function" placeholder="x**2" required>
-            <button type="submit">Generate Graph</button>
-        </form>
-        <div id="graph">
-            <img id="graph-img" src="" alt="Graph will appear here">
-        </div>
-    </div>
-    <script><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.plot.ly/plotly-2.20.0.min.js"></script>
     <title>ISU Artifact: Graph Calculator</title>
 </head>
 <body>
   <div class="container">
     <h1>Graph Calculator</h1>
     <h2>ISU: Part 2 Artifact (<a href="https://github.com/vic-tor-ia0314/isu2">Source Code</a>)</h2>
-    <label for="shape">Choose something to practice:</label>
-    <form id="function-form">
-      <label for="function-input">Enter a function (e.g., x**2):</label>
-      <input type="text" id="function-input" name="function" placeholder="x**2" required>
-      <button type="submit">Generate Graph</button>
-    </form>
-    <div id="graph">
-      <img id="graph-img" src="" alt="Graph will appear here">
+
+    <label for="graph-type">Choose a graph type:</label>
+    <select id="graph-type" onchange="showInputs()">
+      <option value="">--Select--</option>
+      <option value="bar">Bar Graph</option>
+      <option value="scatter">Scatterplot</option>
+      <option value="box">Box Plot</option>
+    </select>
+
+    <div id="input-section" class="input-section" style="display:none;">
+      <div id="labels-input" style="display:none;">
+        <label for="labels">Enter labels (comma-separated):</label><br>
+        <input type="text" id="labels" placeholder="e.g., A, B, C"><br><br>
+      </div>
+
+      <div id="data-input">
+        <label for="data">Enter data values (comma-separated):</label><br>
+        <input type="text" id="data" placeholder="e.g., 10, 20, 30"><br><br>
+      </div>
+
+      <button onclick="generateGraph()">Generate Graph</button>
+    </div>
+
+    <div id="chart-container">
+      <div id="myChart"></div>
+    </div>
+
+    <div id="stats-container" class="stats" style="display:none;">
+      <h3>Statistics</h3>
+      <p id="mean"></p>
+      <p id="median"></p>
+      <p id="mode"></p>
+      <p id="range"></p>
+      <p id="outliers"></p>
     </div>
   </div>
+
   <script>
-    document.getElementById('function-form').addEventListener('submit', async function (e) {
-    e.preventDefault();
+    function showInputs() {
+      const graphType = document.getElementById("graph-type").value;
+      const inputSection = document.getElementById("input-section");
+      const labelsInput = document.getElementById("labels-input");
 
-    const functionInput = document.getElementById('function-input').value;
-
-    try {
-        const response = await fetch('/plot', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ function: functionInput })
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            alert(`Error: ${errorData.error}`);
-            return;
+      if (graphType) {
+        inputSection.style.display = "block";
+        if (graphType === "bar") {
+          labelsInput.style.display = "block"; // Show labels input for bar graphs
+        } else {
+          labelsInput.style.display = "none"; // Hide labels input for scatter and box plots
         }
-
-        const data = await response.json();
-        document.getElementById('graph-img').src = data.plot;
-    } catch (err) {
-        console.error('Error:', err);
-        alert('Failed to generate graph.');
+      } else {
+        inputSection.style.display = "none";
+      }
     }
-});
-</script>
+
+    function calculateStats(data) {
+      data = data.filter(value => !isNaN(value) && typeof value === 'number');
+      if (data.length === 0) {
+        throw new Error("No valid numeric data provided.");
+      }
+      data.sort((a, b) => a - b);
+      const mean = data.reduce((a, b) => a + b, 0) / data.length;
+      const median = data.length % 2 === 0
+        ? (data[data.length / 2 - 1] + data[data.length / 2]) / 2
+        : data[Math.floor(data.length / 2)];
+      const mode = Object.entries(data.reduce((acc, num) => {
+        acc[num] = (acc[num] || 0) + 1;
+        return acc;
+      }, {})).reduce((a, b) => b[1] > a[1] ? b : a, [null, -Infinity])[0];
+      const range = data[data.length - 1] - data[0];
+      const q1 = data[Math.floor((data.length / 4))];
+      const q3 = data[Math.ceil((data.length * (3 / 4))) - 1];
+      const iqr = q3 - q1;
+      const outliers = data.filter(x => x < q1 - 1.5 * iqr || x > q3 + 1.5 * iqr);
+      return { mean, median, mode, range, outliers };
+    }
+
+    function displayStats(stats) {
+      document.getElementById('stats-container').style.display = 'block';
+      document.getElementById('mean').textContent = `Mean: ${stats.mean.toFixed(2)}`;
+      document.getElementById('median').textContent = `Median: ${stats.median}`;
+      document.getElementById('mode').textContent = `Mode: ${stats.mode}`;
+      document.getElementById('range').textContent = `Range: ${stats.range}`;
+      document.getElementById('outliers').textContent = `Outliers: ${stats.outliers.join(', ') || 'None'}`;
+    }
+
+    function generateGraph() {
+      const graphType = document.getElementById("graph-type").value;
+      const labels = document.getElementById("labels").value.split(",").map(label => label.trim());
+      const data = document.getElementById("data").value.split(",").map(value => parseFloat(value.trim()));
+
+      if (!graphType) {
+        alert("Please select a graph type.");
+        return;
+      }
+      if (data.length === 0) {
+        alert("Please enter valid numeric data.");
+        return;
+      }
+      if (graphType === "bar" && labels.length !== data.length) {
+        alert("The number of labels must match the number of data points.");
+        return;
+      }
+
+      const chartContainer = document.getElementById("myChart");
+      chartContainer.innerHTML = "";
+
+      if (graphType === "bar") {
+        Plotly.newPlot(chartContainer, [{
+          x: labels,
+          y: data,
+          type: "bar"
+        }], {
+          title: "Bar Graph",
+          xaxis: { title: "Labels" },
+          yaxis: { title: "Values" }
+        });
+      } else if (graphType === "scatter") {
+        Plotly.newPlot(chartContainer, [{
+          x: data,
+          y: data,
+          mode: "markers",
+          type: "scatter"
+        }], {
+          title: "Scatterplot",
+          xaxis: { title: "Values" },
+          yaxis: { title: "Values" }
+        });
+      } else if (graphType === "box") {
+        Plotly.newPlot(chartContainer, [{
+          y: data,
+          type: "box"
+        }], {
+          title: "Box Plot",
+          yaxis: { title: "Values" }
+        });
+      } else {
+        alert("Invalid graph type selected.");
+      }
+
+      const stats = calculateStats(data);
+      displayStats(stats);
+    }
+  </script>
 </body>
-</html></script>
-    </body>
 </html>
