@@ -1,114 +1,136 @@
 body {
-    font-family: 'Cambria', sans-serif;
-    font-size: 1.2rem;
-    margin: 40px;
-    text-align: center;
-    background-image: url(https://bikefriendlyoc.org/wp-content/uploads/2016/09/website-background-pattern.jpg);
+  font-family: 'Cambria', sans-serif;
+  font-size: 1.2rem;
+  margin: 40px;
+  text-align: center;
+  background-image: url(https://bikefriendlyoc.org/wp-content/uploads/2016/09/website-background-pattern.jpg);
 }
 .hidden {
-    display: none;
+  display: none;
 }
   
 h1 {
-    text-align: center;
-    margin-bottom: 10px;
-    font-size: 3rem;
-    color: #850000;
-    border-radius: 30px;
-    padding: 15px;
-    background-color: #fcf0f0;
-    border: 5px solid #850000;
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 3rem;
+  color: #850000;
+  border-radius: 30px;
+  padding: 15px;
+  background-color: #fcf0f0;
+  border: 5px solid #850000;
 }
   
 h2 {
-    background-color: #850000;
-    color: white;
-    border-radius: 15px;
-    padding: 5px;
-    margin-top: 0px;
-    margin-bottom: 20px;
+  background-color: #850000;
+  color: white;
+  border-radius: 15px;
+  padding: 5px;
+  margin-top: 0px;
+  margin-bottom: 20px;
 }
 
 .question {
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 6px;
-    background-color: #ededfc;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: #ededfc;
 }
 .answer {
-    margin-left: 20px;
-    color: #014d22;
-    margin-top: 5px;
+  margin-left: 20px;
+  color: #014d22;
+  margin-top: 5px;
 }
   
 select {
-    font-family: 'Perpetua', Sans-Serif;
-    font-size: 1rem;
-    padding: 10px;
-    margin: 20px;
-    border: 2px solid #a87b00;
-    border-radius: 7px;
-    background-color: #f4f4f4;
-    color: #111;
-    cursor: pointer;
+  font-family: 'Perpetua', Sans-Serif;
+  font-size: 1rem;
+  padding: 10px;
+  margin: 20px;
+  border: 2px solid #a87b00;
+  border-radius: 7px;
+  background-color: #f4f4f4;
+  color: #111;
+  cursor: pointer;
 }
 
 select:hover {
-    background-color: #fcf1d2;
-    border-color: #d19900;
+  background-color: #fcf1d2;
+  border-color: #d19900;
 }
 
 input {
-    font-family: 'Perpetua', Sans-Serif;
-    padding: 10px;
-    margin: 20px;
-    border: 2px solid #00236e;
-    border-radius: 7px;
-    background-color: #f4f4f4;
-    color: #111;
-    cursor: text;
+  font-family: 'Perpetua', Sans-Serif;
+  padding: 10px;
+  margin: 20px;
+  border: 2px solid #00236e;
+  border-radius: 7px;
+  background-color: #f4f4f4;
+  color: #111;
+  cursor: text;
 }
 
 input:hover {
-    border-color: #0037ad;
-    background-color: #e4eaf7;
+  border-color: #0037ad;
+  background-color: #e4eaf7;
 }
   
 button {
-    font-family: 'Cambria', Sans-Serif;
-    font-size: 1rem;
-    padding: 5px;
-    margin-bottom: 30px;
-    border: 2px solid #014d22;
-    border-radius: 5px;
-    background-color: #f4f4f4;
-    color: #111;
-    cursor: pointer;
+  font-family: 'Cambria', Sans-Serif;
+  font-size: 1rem;
+  padding: 5px;
+  margin-bottom: 30px;
+  border: 2px solid #014d22;
+  border-radius: 5px;
+  background-color: #f4f4f4;
+  color: #111;
+  cursor: pointer;
 }
 
 button:hover {
-    background-color: #e8fff2;
+  background-color: #e8fff2;
 }
 
 footer {
-    background-color: #850000;
-    color: white;
-    text-align: center;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 0;
+  background-color: #850000;
+  color: white;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 0;
 }
 
 a {
-    margin-bottom: 20px;
-    padding: 0;
-    color: white;
+  margin-bottom: 20px;
+  padding: 0;
+  color: white;
 }
 
 #graph img {
     width: 100%;
     max-width: 600px;
     margin-top: 20px;
+}
+
+h3 {
+  text-align: center;
+  background-color: #850000;
+  color: white;
+  border-radius: 15px;
+  padding: 10px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.stats {
+  text-align: left;
+  font-size: 20px;
+  color: #850000;
+  border-radius: 10px;
+  padding: 5px;
+  background-color: #fcf0f0;
+  border: 5px solid #850000;
+  line-height: 16px;
+  margin-bottom: 10px;
 }
