@@ -11,13 +11,13 @@
   <div class="container">
     <h1>Graph Calculator</h1>
     <h2>ISU: Part 2 Artifact (<a href="https://github.com/vic-tor-ia0314/isu2">Source Code</a>)</h2>
-
     <label for="graph-type">Choose a graph type:</label>
     <select id="graph-type" onchange="showInputs()">
       <option value="">--Select--</option>
       <option value="bar">Bar Graph</option>
       <option value="scatter">Scatterplot</option>
       <option value="box">Box Plot</option>
+      <option value="pie">Pie Chart</option>
     </select>
 
     <div id="input-section" class="input-section" style="display:none;">
@@ -29,6 +29,11 @@
       <div id="data-input">
         <label for="data">Enter data values (comma-separated):</label><br>
         <input type="text" id="data" placeholder="e.g., 10, 20, 30"><br><br>
+      </div>
+      
+      <div id="title-input" style="display:none">
+        <label for="title">Enter the title of your graph</label><br>
+        <input type="text" id="title" placeholder="e.g. My Graph"><br><br>
       </div>
 
       <button onclick="generateGraph()">Generate Graph</button>
@@ -53,13 +58,17 @@
       const graphType = document.getElementById("graph-type").value;
       const inputSection = document.getElementById("input-section");
       const labelsInput = document.getElementById("labels-input");
+      const titleInput = document.getElementById("title-input");
 
       if (graphType) {
         inputSection.style.display = "block";
+        titleInput.style.display = "block";
         if (graphType === "bar") {
-          labelsInput.style.display = "block"; // Show labels input for bar graphs
+          labelsInput.style.display = "block";
+        } else if (graphType === "pie") {
+          labelsInput.style.display = "block";
         } else {
-          labelsInput.style.display = "none"; // Hide labels input for scatter and box plots
+          labelsInput.style.display = "none";
         }
       } else {
         inputSection.style.display = "none";
@@ -101,9 +110,14 @@
       const graphType = document.getElementById("graph-type").value;
       const labels = document.getElementById("labels").value.split(",").map(label => label.trim());
       const data = document.getElementById("data").value.split(",").map(value => parseFloat(value.trim()));
+      const title = document.getElementById("title").value.trim();
 
       if (!graphType) {
         alert("Please select a graph type.");
+        return;
+      }
+      if (!title) {
+        alert("Please enter a title for your graph.");
         return;
       }
       if (data.length === 0) {
@@ -111,6 +125,10 @@
         return;
       }
       if (graphType === "bar" && labels.length !== data.length) {
+        alert("The number of labels must match the number of data points.");
+        return;
+      }
+      if (graphType === "pie" && labels.length !== data.length) {
         alert("The number of labels must match the number of data points.");
         return;
       }
@@ -124,7 +142,7 @@
           y: data,
           type: "bar"
         }], {
-          title: "Bar Graph",
+          title: title,
           xaxis: { title: "Labels" },
           yaxis: { title: "Values" }
         });
@@ -135,7 +153,7 @@
           mode: "markers",
           type: "scatter"
         }], {
-          title: "Scatterplot",
+          title: title,
           xaxis: { title: "Values" },
           yaxis: { title: "Values" }
         });
@@ -144,8 +162,16 @@
           y: data,
           type: "box"
         }], {
-          title: "Box Plot",
+          title: title,
           yaxis: { title: "Values" }
+        });
+      } else if (graphType === "pie") {
+        Plotly.newPlot(chartContainer, [{
+          labels: labels,
+          values: data,
+          type: "pie"
+        }], {
+          title: title
         });
       } else {
         alert("Invalid graph type selected.");
