@@ -22,12 +22,17 @@
 
     <div id="input-section" class="input-section" style="display:none;">
       <div id="labels-input" style="display:none;">
-        <label for="labels">Enter labels (comma-separated):</label>
+        <label for="labels">(x axis) Enter labels (comma-separated):</label>
         <input type="text" id="labels" placeholder="e.g., A, B, C"><br>
+      </div>
+      
+      <div id="xaxis-input" style="display:none;">
+        <label for="xaxis">Enter x values (comma-separated):</label>
+        <input type="text" id="xaxis" placeholder="e.g., A, B, C"><br>
       </div>
 
       <div id="data-input">
-        <label for="data">Enter data values (comma-separated):</label>
+        <label for="data">(y axis) Enter data values (comma-separated):</label>
         <input type="text" id="data" placeholder="e.g., 10, 20, 30"><br>
       </div>
       
@@ -63,14 +68,18 @@
       const inputSection = document.getElementById("input-section");
       const labelsInput = document.getElementById("labels-input");
       const titleInput = document.getElementById("title-input");
+      const xInput = document.getElementById("xaxis-input");
 
       if (graphType) {
         inputSection.style.display = "block";
         titleInput.style.display = "block";
+        xInput.style.display = "none"
         if (graphType === "bar") {
           labelsInput.style.display = "block";
         } else if (graphType === "pie") {
           labelsInput.style.display = "block";
+        }else if (graphType === "scatter") {
+          xInput.style.display = "block";
         } else {
           labelsInput.style.display = "none";
         }
@@ -115,6 +124,7 @@
       const labels = document.getElementById("labels").value.split(",").map(label => label.trim());
       const data = document.getElementById("data").value.split(",").map(value => parseFloat(value.trim()));
       const title = document.getElementById("title").value.trim();
+      const X = document.getElementById("xaxis").value.split(",").map(value => parseFloat(value.trim()));
 
       if (!graphType) {
         alert("Please select a graph type.");
@@ -136,6 +146,14 @@
         alert("The number of labels must match the number of data points.");
         return;
       }
+      if (graphType === "scatter" && X.length === 0) {
+        alert("Please enter valid numeric values for the x-axis.");
+        return;
+      }
+      if (!data || data.some(val => isNaN(val))) {
+        alert("Please enter valid numeric data for the y-axis.");
+        return;
+      }
 
       const chartContainer = document.getElementById("myChart");
       chartContainer.innerHTML = "";
@@ -151,7 +169,7 @@
           yaxis: { title: "Values" }
         });
       } else if (graphType === "scatter") {
-        const x = Array.from({ length: data.length }, (_, i) => i);
+        const x = X;
         const y = data;
         const sum = (arr) => arr.reduce((a, b) => a + b, 0);
         const meanX = sum(x) / x.length;
