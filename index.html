@@ -15,25 +15,25 @@
     <select id="graph-type" onchange="showInputs()">
       <option value="">--Select--</option>
       <option value="bar">Bar Graph</option>
-      <option value="scatter">Scatterplot</option>
+      <option value="scatter">Scatter Plot</option>
       <option value="box">Box Plot</option>
       <option value="pie">Pie Chart</option>
     </select>
 
     <div id="input-section" class="input-section" style="display:none;">
       <div id="labels-input" style="display:none;">
-        <label for="labels">Enter labels (comma-separated):</label><br>
-        <input type="text" id="labels" placeholder="e.g., A, B, C"><br><br>
+        <label for="labels">Enter labels (comma-separated):</label>
+        <input type="text" id="labels" placeholder="e.g., A, B, C"><br>
       </div>
 
       <div id="data-input">
-        <label for="data">Enter data values (comma-separated):</label><br>
-        <input type="text" id="data" placeholder="e.g., 10, 20, 30"><br><br>
+        <label for="data">Enter data values (comma-separated):</label>
+        <input type="text" id="data" placeholder="e.g., 10, 20, 30"><br>
       </div>
       
       <div id="title-input" style="display:none">
-        <label for="title">Enter the title of your graph</label><br>
-        <input type="text" id="title" placeholder="e.g. My Graph"><br><br>
+        <label for="title">Enter the title of your graph</label>
+        <input type="text" id="title" placeholder="e.g. My Graph"><br>
       </div>
 
       <button onclick="generateGraph()">Generate Graph</button>
@@ -151,16 +151,38 @@
           yaxis: { title: "Values" }
         });
       } else if (graphType === "scatter") {
-        Plotly.newPlot(chartContainer, [{
-          x: data,
-          y: data,
-          mode: "markers",
-          type: "scatter"
-        }], {
-          title: title,
-          xaxis: { title: "Values" },
-          yaxis: { title: "Values" }
-        });
+        const x = Array.from({ length: data.length }, (_, i) => i);
+        const y = data;
+        const sum = (arr) => arr.reduce((a, b) => a + b, 0);
+        const meanX = sum(x) / x.length;
+        const meanY = sum(y) / y.length;
+        const variance = (arr, mean) => sum(arr.map((value) => Math.pow(value - mean, 2))) / arr.length;
+        const covariance = (x, y, meanX, meanY) => sum(x.map((xVal, i) => (xVal - meanX) * (y[i] - meanY))) / x.length;
+        const slope = covariance(x, y, meanX, meanY) / variance(x, meanX);
+        const intercept = meanY - slope * meanX;
+        const regressionLine = x.map((xVal) => slope * xVal + intercept);
+        const layout = {
+          title: 'Scatter Plot with Regression Line',
+          xaxis: { title: 'X' },
+          yaxis: { title: 'Y' },
+        };
+        const sdata = [
+          {
+            x: x,
+            y: y,
+            mode: 'markers',
+            type: 'scatter',
+            name: 'Data',
+          },
+          {
+            x: x,
+            y: regressionLine,
+            mode: 'lines',
+            type: 'scatter',
+            name: 'Regression Line',
+          },
+        ];
+        Plotly.newPlot(chartContainer, sdata, layout);
       } else if (graphType === "box") {
         Plotly.newPlot(chartContainer, [{
           y: data,
