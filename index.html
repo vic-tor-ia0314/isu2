@@ -22,18 +22,23 @@
 
     <div id="input-section" class="input-section" style="display:none;">
       <div id="labels-input" style="display:none;">
-        <label for="labels">(x axis) Enter labels (comma-separated):</label>
-        <input type="text" id="labels" placeholder="e.g., A, B, C"><br>
+        <label for="labels">Enter labels (comma-separated):</label>
+        <input type="text" id="labels" placeholder="e.g., A,B,C"><br>
       </div>
       
       <div id="xaxis-input" style="display:none;">
         <label for="xaxis">Enter x values (comma-separated):</label>
-        <input type="text" id="xaxis" placeholder="e.g., A, B, C"><br>
+        <input type="text" id="xaxis" placeholder="e.g. 1,2,3"><br>
+      </div>
+      
+      <div id="xtitle-input" style="display:none;">
+        <label for="xtitle">Enter x axis title:</label>
+        <input type="text" id="xtitle" placeholder="e.g. Height"><br>
       </div>
 
       <div id="data-input">
-        <label for="data">(y axis) Enter data values (comma-separated):</label>
-        <input type="text" id="data" placeholder="e.g., 10, 20, 30"><br>
+        <label for="data">Enter data values (comma-separated):</label>
+        <input type="text" id="data" placeholder="e.g. 10,20,30"><br>
       </div>
       
       <div id="title-input" style="display:none">
@@ -69,15 +74,18 @@
       const labelsInput = document.getElementById("labels-input");
       const titleInput = document.getElementById("title-input");
       const xInput = document.getElementById("xaxis-input");
+      const xTitle = document.getElementById("xtitle-input");
 
       if (graphType) {
         inputSection.style.display = "block";
         titleInput.style.display = "block";
-        xInput.style.display = "none"
+        xInput.style.display = "none";
+        xTitle.style.display = "block";
         if (graphType === "bar") {
           labelsInput.style.display = "block";
         } else if (graphType === "pie") {
           labelsInput.style.display = "block";
+          xTitle.style.display = "none";
         }else if (graphType === "scatter") {
           xInput.style.display = "block";
         } else {
@@ -125,6 +133,7 @@
       const data = document.getElementById("data").value.split(",").map(value => parseFloat(value.trim()));
       const title = document.getElementById("title").value.trim();
       const X = document.getElementById("xaxis").value.split(",").map(value => parseFloat(value.trim()));
+      const xtitle = document.getElementById("xtitle").value.trim();
 
       if (!graphType) {
         alert("Please select a graph type.");
@@ -165,8 +174,8 @@
           type: "bar"
         }], {
           title: title,
-          xaxis: { title: "Labels" },
-          yaxis: { title: "Values" }
+          xaxis: {title: xtitle},
+          yaxis: {title: "Values"},
         });
       } else if (graphType === "scatter") {
         const x = X;
@@ -180,9 +189,9 @@
         const intercept = meanY - slope * meanX;
         const regressionLine = x.map((xVal) => slope * xVal + intercept);
         const layout = {
-          title: 'Scatter Plot with Regression Line',
-          xaxis: { title: 'X' },
-          yaxis: { title: 'Y' },
+          title: title,
+          xaxis: {title: xtitle},
+          yaxis: {title: 'Y'},
         };
         const sdata = [
           {
@@ -207,7 +216,8 @@
           type: "box"
         }], {
           title: title,
-          yaxis: { title: "Values" }
+          yaxis: {title: "Values"},
+          xaxis: {title: xtitle},
         });
       } else if (graphType === "pie") {
         Plotly.newPlot(chartContainer, [{
@@ -215,7 +225,7 @@
           values: data,
           type: "pie"
         }], {
-          title: title
+          title: title,
         });
       } else {
         alert("Invalid graph type selected.");
