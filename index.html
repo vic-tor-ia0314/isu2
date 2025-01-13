@@ -33,11 +33,16 @@
       
       <div id="xtitle-input" style="display:none;">
         <label for="xtitle">Enter x axis title:</label>
-        <input type="text" id="xtitle" placeholder="e.g. Height"><br>
+        <input type="text" id="xtitle" placeholder="e.g. Time"><br>
+      </div>
+      
+      <div id="ytitle-input" style="display:none;">
+        <label for="ytitle">Enter y axis title:</label>
+        <input type="text" id="ytitle" placeholder="e.g. Height"><br>
       </div>
 
       <div id="data-input">
-        <label for="data">Enter data values (comma-separated):</label>
+        <label for="data">Enter dataset/y values (comma-separated):</label>
         <input type="text" id="data" placeholder="e.g. 10,20,30"><br>
       </div>
       
@@ -75,19 +80,23 @@
       const titleInput = document.getElementById("title-input");
       const xInput = document.getElementById("xaxis-input");
       const xTitle = document.getElementById("xtitle-input");
+      const yTitle = document.getElementById("ytitle-input");
 
       if (graphType) {
         inputSection.style.display = "block";
         titleInput.style.display = "block";
         xInput.style.display = "none";
         xTitle.style.display = "block";
+        yTitle.style.display = "block";
         if (graphType === "bar") {
           labelsInput.style.display = "block";
         } else if (graphType === "pie") {
           labelsInput.style.display = "block";
           xTitle.style.display = "none";
+          yTitle.style.display = "none";
         }else if (graphType === "scatter") {
           xInput.style.display = "block";
+          labelsInput.style.display = "none";
         } else {
           labelsInput.style.display = "none";
         }
@@ -134,7 +143,8 @@
       const title = document.getElementById("title").value.trim();
       const X = document.getElementById("xaxis").value.split(",").map(value => parseFloat(value.trim()));
       const xtitle = document.getElementById("xtitle").value.trim();
-
+      const ytitle = document.getElementById("ytitle").value.trim();
+      
       if (!graphType) {
         alert("Please select a graph type.");
         return;
@@ -175,7 +185,7 @@
         }], {
           title: title,
           xaxis: {title: xtitle},
-          yaxis: {title: "Values"},
+          yaxis: {title: ytitle},
         });
       } else if (graphType === "scatter") {
         const x = X;
@@ -191,7 +201,7 @@
         const layout = {
           title: title,
           xaxis: {title: xtitle},
-          yaxis: {title: 'Y'},
+          yaxis: {title: ytitle},
         };
         const sdata = [
           {
@@ -216,7 +226,7 @@
           type: "box"
         }], {
           title: title,
-          yaxis: {title: "Values"},
+          yaxis: {title: ytitle},
           xaxis: {title: xtitle},
         });
       } else if (graphType === "pie") {
