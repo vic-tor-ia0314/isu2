@@ -18,6 +18,7 @@
       <option value="scatter">Scatter Plot</option>
       <option value="box">Box Plot</option>
       <option value="pie">Pie Chart</option>
+      <option value="???">???</option>
     </select>
 
     <div id="input-section" class="input-section" style="display:none;">
@@ -47,7 +48,7 @@
       </div>
       
       <div id="title-input" style="display:none">
-        <label for="title">Enter the title of your graph</label>
+        <label for="title">Enter the title of your graph:</label>
         <input type="text" id="title" placeholder="e.g. My Graph"><br>
       </div>
 
@@ -81,6 +82,10 @@
       const xInput = document.getElementById("xaxis-input");
       const xTitle = document.getElementById("xtitle-input");
       const yTitle = document.getElementById("ytitle-input");
+      const dataInput = document.getElementById("data-input");
+      
+      const chartContainer = document.getElementById("myChart");
+      chartContainer.innerHTML = "";
 
       if (graphType) {
         inputSection.style.display = "block";
@@ -88,15 +93,23 @@
         xInput.style.display = "none";
         xTitle.style.display = "block";
         yTitle.style.display = "block";
+        dataInput.style.display = "block";
         if (graphType === "bar") {
           labelsInput.style.display = "block";
         } else if (graphType === "pie") {
           labelsInput.style.display = "block";
           xTitle.style.display = "none";
           yTitle.style.display = "none";
-        }else if (graphType === "scatter") {
+        } else if (graphType === "scatter") {
           xInput.style.display = "block";
           labelsInput.style.display = "none";
+        } else if (graphType === "???") {
+          labelsInput.style.display = "none";
+          xInput.style.display = "none";
+          xTitle.style.display = "none";
+          yTitle.style.display = "none";
+          titleInput.style.display = "none";
+          dataInput.style.display = "none";
         } else {
           labelsInput.style.display = "none";
         }
@@ -144,38 +157,61 @@
       const X = document.getElementById("xaxis").value.split(",").map(value => parseFloat(value.trim()));
       const xtitle = document.getElementById("xtitle").value.trim();
       const ytitle = document.getElementById("ytitle").value.trim();
+      const dataInput = document.getElementById("data-input");
       
       if (!graphType) {
         alert("Please select a graph type.");
         return;
       }
-      if (!title) {
-        alert("Please enter a title for your graph.");
-        return;
+      if (dataInput.style.display === "block") {
+        if (!title) {
+          alert("Please enter a title for your graph.");
+          return;
+        }
+        if (data.length === 0) {
+          alert("Please enter valid numeric data.");
+          return;
+        }
+        if (graphType === "bar" && labels.length !== data.length) {
+          alert("The number of labels must match the number of data points.");
+          return;
+        }
+        if (graphType === "pie" && labels.length !== data.length) {
+          alert("The number of labels must match the number of data points.");
+          return;
+        }
+        if (graphType === "scatter" && X.length === 0) {
+          alert("Please enter valid numeric values for the x-axis.");
+          return;
+        }
+        if (!data || data.some(val => isNaN(val))) {
+          alert("Please enter valid numeric data for the y-axis.");
+          return;
+        }
       }
-      if (data.length === 0) {
-        alert("Please enter valid numeric data.");
-        return;
-      }
-      if (graphType === "bar" && labels.length !== data.length) {
-        alert("The number of labels must match the number of data points.");
-        return;
-      }
-      if (graphType === "pie" && labels.length !== data.length) {
-        alert("The number of labels must match the number of data points.");
-        return;
-      }
-      if (graphType === "scatter" && X.length === 0) {
-        alert("Please enter valid numeric values for the x-axis.");
-        return;
-      }
-      if (!data || data.some(val => isNaN(val))) {
-        alert("Please enter valid numeric data for the y-axis.");
-        return;
-      }
-
       const chartContainer = document.getElementById("myChart");
       chartContainer.innerHTML = "";
+      
+      if (graphType === "???") {
+        chartContainer.innerHTML = `
+          <p style="color: red; font-weight: bold;">
+            3rr0r: 50rry, th1s pAge d0es n0t ex1s+
+          </p>
+          <p style="color: red; font-weight: bold;">
+            Okay, fine, I'll give you what you want. <br>
+            Here's a little secret:
+          </p>
+          <ul style="color: red; font-weight: bold;">
+            <li>Your x-axis will be exactly: <b>1,1,2,2,3,3,4,4,5,5</b>.</li>
+            <li>Your y-axis will be: <b>3,4,2,5,1,4,2,5,3,4</b>.</li>
+          </ul>
+          <p style="color: red; font-weight: bold;">
+            Enter these two into the scatter plot option. <br>
+            Hope this helps.
+            </p>
+        `;
+        return;
+      }
 
       if (graphType === "bar") {
         Plotly.newPlot(chartContainer, [{
@@ -240,7 +276,6 @@
       } else {
         alert("Invalid graph type selected.");
       }
-
       const stats = calculateStats(data);
       displayStats(stats);
     }
